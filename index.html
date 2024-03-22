@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plantilla Lanzamiento Pipops</title>
+<style>
+    body{
+        overflow: hidden;
+        background-color: black;
+    }
+    .fondo {
+        margin: auto;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        filter: blur(30px); /* Ajusta el valor de desenfoque según sea necesario */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-image: url('sample.jpg');
+        background-size: cover;
+        background-position: center;
+    }
+
+    h1{
+        margin-bottom: -10px;
+        cursor: pointer; /* Cambia el cursor al hacer clic */
+    }
+
+    .portada {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+        max-width: 100%;
+        max-height: 100%;
+        display: block;
+        text-align: center;
+        font-family: Arial, Helvetica, sans-serif;
+        color: white;
+        text-shadow: 1px 2px 5px black;
+    }
+
+    .portada img{
+        min-height: 450px;
+        max-height: 450px;
+        box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.7); /* desplazamiento horizontal, desplazamiento vertical, radio de desenfoque, color */
+        cursor: pointer; /* Cambia el cursor al hacer clic */
+    }
+</style>
+</head>
+<body>
+    <div class="fondo"></div>
+    <div class="portada">
+        <img src="sample.jpg" ondblclick="seleccionarImagen()">
+        <h1 contenteditable="true" ondblclick="editarTexto(this)">Nombre del lanzamiento</h1>
+        <h2 contenteditable="true" ondblclick="editarTexto(this)">Artista</h2>
+    </div>
+
+    <script>
+        function seleccionarImagen() {
+            var input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+
+            input.onchange = function(e) {
+                var file = e.target.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function() {
+                        var img = document.querySelector('.portada img');
+                        var fondo = document.querySelector('.fondo');
+
+                        img.src = reader.result;
+                        fondo.style.backgroundImage = "url('" + reader.result + "')";
+                    }
+                    reader.readAsDataURL(file);
+                }
+            }
+            input.click();
+        }
+
+        function editarTexto(elemento) {
+            elemento.focus();
+        }
+    </script>
+</body>
+</html>
