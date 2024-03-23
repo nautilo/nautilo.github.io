@@ -49,6 +49,24 @@
         box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.7); /* desplazamiento horizontal, desplazamiento vertical, radio de desenfoque, color */
         cursor: pointer; /* Cambia el cursor al hacer clic */
     }
+    #thefile {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 100;
+    }
+
+    #canvas {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    }
+
+    audio {
+    display: none; /* Oculta los controles de audio */
+    }
 </style>
 </head>
 <body>
@@ -58,7 +76,77 @@
         <h1 contenteditable="true" spellcheck="false" ondblclick="editarTexto(this)">Nombre del lanzamiento</h1>
         <h2 contenteditable="true" spellcheck="false" ondblclick="editarTexto(this)">Artista</h2>
     </div>
-
+    <div id="content">
+        <input type="file" id="thefile" accept="audio/*" />
+        <canvas id="canvas"></canvas>
+      </div>
+      <script>
+        window.onload = function() {
+         
+         var file = document.getElementById("thefile");
+         var audio = document.createElement('audio');
+         document.body.appendChild(audio);
+         audio.volume = 0.1; // Establece el volumen al 10%
+         audio.controls = false; // Oculta los controles de audio
+         
+         file.onchange = function() {
+           file.style.display = "none";
+           var files = this.files;
+           audio.src = URL.createObjectURL(files[0]);
+           audio.load();
+           audio.play();
+           var context = new AudioContext();
+           var src = context.createMediaElementSource(audio);
+           var analyser = context.createAnalyser();
+       
+           var canvas = document.getElementById("canvas");
+           canvas.width = window.innerWidth;
+           canvas.height = window.innerHeight;
+           var ctx = canvas.getContext("2d");
+       
+           src.connect(analyser);
+           analyser.connect(context.destination);
+       
+           analyser.fftSize = 256;
+       
+           var bufferLength = analyser.frequencyBinCount;
+           console.log(bufferLength);
+       
+           var dataArray = new Uint8Array(bufferLength);
+       
+           var WIDTH = canvas.width;
+           var HEIGHT = canvas.height;
+       
+           var barWidth = (WIDTH / bufferLength) * 2.5;
+           var x = 0;
+       
+           function renderFrame() {
+             requestAnimationFrame(renderFrame);
+       
+             x = 0;
+       
+             analyser.getByteFrequencyData(dataArray);
+       
+             ctx.clearRect(0, 0, WIDTH, HEIGHT); // Limpiar el canvas en cada cuadro de animación
+       
+             for (var i = 0; i < bufferLength; i++) {
+               var barHeight = dataArray[i];
+               var r = barHeight + (25 * (i/bufferLength));
+               var g = 250 * (i/bufferLength);
+               var b = 50;
+       
+               ctx.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
+               ctx.fillRect(x, HEIGHT - barHeight, barWidth, barHeight);
+       
+               x += barWidth + 1;
+             }
+           }
+       
+           audio.play();
+           renderFrame();
+         };
+       };   
+         </script>
     <script>
         function seleccionarImagen() {
             var input = document.createElement('input');
