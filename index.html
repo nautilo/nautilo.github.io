@@ -135,13 +135,23 @@
     <div class="portada">
 
         <img src="sample.png" ondblclick="seleccionarImagen()">
-        <h1 contenteditable="true" spellcheck="false" ondblclick="editarTexto(this)">Nombre del lanzamiento</h1>
-        <h2 contenteditable="true" spellcheck="false" ondblclick="editarTexto(this)">Artista</h2>
+        <h1 contenteditable="true" spellcheck="false" ondblclick="editarTexto(this)"  onwheel="cambiarTamaño(this, event)">Nombre del lanzamiento</h1>
+        <h2 contenteditable="true" spellcheck="false" ondblclick="editarTexto(this)"  onwheel="cambiarTamaño(this, event)">Artista</h2>
     </div>
     <div id="content">
         <canvas id="canvas"></canvas>
       </div>
       <script>
+    function cambiarTamaño(elemento, evento) {
+      // Obtener el delta de la rueda para determinar la dirección del movimiento
+      var delta = -Math.sign(evento.deltaY);
+
+      // Obtener el tamaño de la fuente actual
+      var fontSize = parseInt(window.getComputedStyle(elemento).fontSize);
+
+      // Ajustar el tamaño de la fuente en función del movimiento de la rueda
+      elemento.style.fontSize = (fontSize + delta) + 'px';
+    }
         var portada = document.querySelector('.portada');
         function loadFont(event) {
             const file = event.target.files[0];
