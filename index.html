@@ -8,19 +8,21 @@
     body{
         overflow: hidden;
         background-color: black;
+        margin: 0;
     }
     .fondo {
-        margin: auto;
+        margin: 0;
         width: 100vw;
         height: 100vh;
         overflow: hidden;
-        filter: blur(30px); /* Ajusta el valor de desenfoque según sea necesario */
         display: flex;
         justify-content: center;
         align-items: center;
         background-image: url('sample.png');
+        filter: blur(100px);
         background-size: cover;
         background-position: center;
+        z-index: 1;
     }
 
     h1{
@@ -38,7 +40,8 @@
         max-height: 100%;
         display: block;
         text-align: center;
-        font-family: Arial, Helvetica, sans-serif;
+        /*font-family: Arial, Helvetica, sans-serif;*/
+        font-family: 'MyFont', sans-serif;
         color: white;
         text-shadow: 1px 2px 5px black;
     }
@@ -50,10 +53,8 @@
         cursor: pointer; /* Cambia el cursor al hacer clic */
     }
     #thefile {
-    position: fixed;
-    top: 10px;
-    left: 10px;
     z-index: 100;
+    display:none;
     }
 
     #canvas {
@@ -67,20 +68,135 @@
     audio {
     display: none; /* Oculta los controles de audio */
     }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type="number"] {
+        -moz-appearance: textfield; /* Firefox */
+    }
+    #abridor{
+        max-width: 8px;
+        max-height: 8px;
+        position:absolute;
+        top:0px;
+        left:0px;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 1;
+    }
+    #abridor:hover{
+        opacity: 1;
+    }
+    #close-panel:hover{
+        scale: 120%;
+    }
+    #slider-container{
+        display:none;
+    }
+    #cargaraudio:hover{
+        scale:120%;
+    }
+    #fontUploadLink:hover{
+        scale:130%;
+    }
 </style>
 </head>
 <body>
+    <div id="close-panel" title="Cerrar panel" style="cursor:pointer; display:none; position:absolute; z-index:1; left:85px; top:4px; font-size: 10px; text-shadow: none;" onclick="cerrarPanel()">❌</div>
+    <div id="abridor" title="Configuraciones" onclick="abrirPanel()">⚙️</div>
+    <div id="slider-container" class="slider-container" style="position:absolute; top: 0px; z-index:1;">
+        <div class="row" style="display:flex;">
+            <label id="cargaraudio" title="Cargar audio" for="thefile" style="color: white; cursor: pointer;">🎵</label>
+            <input type="file" id="thefile" accept="audio/*" style="display: none;">
+            <div title="Cargar fuente"style="cursor:pointer; margin-left:5px;" id="fontUploadLink" onclick="document.getElementById('fontUpload').click(); return false;">🗛</div>
+            <input type="file" id="fontUpload" accept=".ttf, .otf" onchange="loadFont(event)" style="display: none;" required>
+        </div>
+        <div class="row">
+            🔆
+            <input type="number" min="0" max="200" value="100" step="10" id="brightness" onchange="actualizarFiltro()">
+        </div>
+        <div class="row">
+            🔲
+            <input type="number" min="0" max="200" value="100" step="10" id="contrast" onchange="actualizarFiltro()">
+        </div>
+        <div class="row">
+            👓
+            <input type="number" min="0" max="200" value="100" step="10" id="blur" onchange="actualizarFiltro()">
+        </div>
+    </div>
+
+
     <div class="fondo"></div>
+
     <div class="portada">
+
         <img src="sample.png" ondblclick="seleccionarImagen()">
         <h1 contenteditable="true" spellcheck="false" ondblclick="editarTexto(this)">Nombre del lanzamiento</h1>
         <h2 contenteditable="true" spellcheck="false" ondblclick="editarTexto(this)">Artista</h2>
     </div>
     <div id="content">
-        <input type="file" id="thefile" accept="audio/*" />
         <canvas id="canvas"></canvas>
       </div>
       <script>
+        var portada = document.querySelector('.portada');
+        function loadFont(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function() {
+                const fontData = reader.result;
+                const fontName = 'CustomFont'; // Nombre de la fuente personalizada
+
+                // Crea un estilo en línea con la fuente personalizada
+                const style = document.createElement('style');
+                style.innerHTML = `@font-face { font-family: '${fontName}'; src: url('${fontData}') format('truetype'); }`;
+
+                // Añade el estilo al head del documento
+                document.head.appendChild(style);
+
+                // Cambia la font-family del body para usar la fuente personalizada
+                portada.style.fontFamily = fontName;
+            };
+
+            reader.readAsDataURL(file); // Lee el archivo como URL de datos
+        }
+    </script>
+      <script>
+var fondo = document.querySelector('.fondo');
+var bslider = document.getElementById("brightness");
+var cslider = document.getElementById("contrast");
+var dslider = document.getElementById("blur");
+
+
+function actualizarFiltro() {
+    var brightnessValue = parseInt(bslider.value);
+    var contrastValue = parseInt(cslider.value);
+    var blurValue = parseInt(dslider.value);
+    
+    fondo.style.filter = "brightness(" + brightnessValue + "%) contrast(" + contrastValue + "%) blur(" + blurValue + "px)";
+}
+
+function abrirPanel() {
+        document.getElementById("close-panel").style.display="block";
+        document.getElementById("slider-container").style.display = "block";
+        document.getElementById("abridor").style.display="none";
+
+     }
+
+function cerrarPanel() {
+        document.getElementById("thefile").style.display = "none";
+        document.getElementById("close-panel").style.display="none";
+        document.getElementById("slider-container").style.display = "none";
+        document.getElementById("abridor").style.display="block";
+     }
+    </script>
+
+      <script>
+
         window.onload = function() {
          
          var file = document.getElementById("thefile");
@@ -90,7 +206,6 @@
          audio.controls = false; // Oculta los controles de audio
          
          file.onchange = function() {
-           file.style.display = "none";
            var files = this.files;
            audio.src = URL.createObjectURL(files[0]);
            audio.load();
