@@ -96,6 +96,8 @@ let canJump = false;
 let velocity = new THREE.Vector3();
 let direction = new THREE.Vector3();
 
+
+
 // Handle joystick movement
 let joystick = document.querySelector('.joystick-inner');
 let joystickContainer = document.querySelector('.joystick');
@@ -148,7 +150,82 @@ function checkCollisions() {
     }
     return false;
 }
-
+// Preload building textures
+const texturePaths = [
+    'textures/buildings/apartments1.png',
+    'textures/buildings/apartments2-2.png',
+    'textures/buildings/apartments2.png',
+    'textures/buildings/apartments2_side.png',
+    'textures/buildings/apartments4.png',
+    'textures/buildings/apartments5.png',
+    'textures/buildings/apartments6.png',
+    'textures/buildings/apartments7.png',
+    'textures/buildings/apartments8.png',
+    'textures/buildings/apartments9.png',
+    'textures/buildings/apartment_block5.png',
+    'textures/buildings/apartment_block6.png',
+    'textures/buildings/apartment_block7.png',
+    'textures/buildings/apartment_block8.png',
+    'textures/buildings/building_5c.png',
+    'textures/buildings/building_center.png',
+    'textures/buildings/building_church_side1.png',
+    'textures/buildings/building_church_side_bottom1.png',
+    'textures/buildings/building_church_side_bottom2.png',
+    'textures/buildings/building_church_side_top.png',
+    'textures/buildings/building_construction.png',
+    'textures/buildings/building_derelict1.png',
+    'textures/buildings/building_dks-1.png',
+    'textures/buildings/building_dks-2.png',
+    'textures/buildings/building_dock.png',
+    'textures/buildings/building_dock2.png',
+    'textures/buildings/building_dock_apartments.png',
+    'textures/buildings/building_dock_apartments2.png',
+    'textures/buildings/building_empty.png',
+    'textures/buildings/building_factory.png',
+    'textures/buildings/building_front2.png',
+    'textures/buildings/building_front3.png',
+    'textures/buildings/building_front4.png',
+    'textures/buildings/building_front5.png',
+    'textures/buildings/building_front8.png',
+    'textures/buildings/building_garage.png',
+    'textures/buildings/building_house1.png',
+    'textures/buildings/building_hsp.png',
+    'textures/buildings/building_h_windows.png',
+    'textures/buildings/building_jmu.png',
+    'textures/buildings/building_jmu2.png',
+    'textures/buildings/building_l2.png',
+    'textures/buildings/building_lb1.png',
+    'textures/buildings/building_lh1.png',
+    'textures/buildings/building_liver.png',
+    'textures/buildings/building_mirrored.png',
+    'textures/buildings/building_modern.png',
+    'textures/buildings/building_modern2.png',
+    'textures/buildings/building_modern3.png',
+    'textures/buildings/building_modern_side.png',
+    'textures/buildings/building_office.png',
+    'textures/buildings/building_office10.png',
+    'textures/buildings/building_office11.png',
+    'textures/buildings/building_office12.png',
+    'textures/buildings/building_office13-end.png',
+    'textures/buildings/building_office13.png',
+    'textures/buildings/building_office2.png',
+    'textures/buildings/building_office3.png',
+    'textures/buildings/building_office4.png',
+    'textures/buildings/building_office5.png',
+    'textures/buildings/building_office7.png',
+    'textures/buildings/building_office8.png',
+    'textures/buildings/building_office9.png',
+    'textures/buildings/building_oldfirm.png',
+    'textures/buildings/building_portacabin.png',
+    'textures/buildings/building_pub_old.png',
+    'textures/buildings/building_showroom_vacant.png',
+    'textures/buildings/building_side.png',
+    'textures/buildings/building_side2.png',
+    'textures/buildings/building_side3.png',
+    'textures/buildings/building_side4.png',
+    'textures/buildings/building_side5.png'
+];
+const textures = texturePaths.map(path => textureLoader.load(path));
 // Function to generate buildings
 function generateBuildings(seed) {
     function random(seed) {
