@@ -207,3 +207,27 @@ const texture = loader.load([
 ]);
 
 scene.background = texture;
+
+// Handling camera rotation with touch events
+let initialTouch = null;
+document.addEventListener('touchstart', function (e) {
+    if (e.touches.length === 1) {
+        initialTouch = e.touches[0];
+    }
+}, false);
+
+document.addEventListener('touchmove', function (e) {
+    if (e.touches.length === 1 && initialTouch) {
+        const deltaX = e.touches[0].clientX - initialTouch.clientX;
+        const deltaY = e.touches[0].clientY - initialTouch.clientY;
+
+        controls.getObject().rotation.y -= deltaX * 0.002;
+        camera.rotation.x -= deltaY * 0.002;
+
+        initialTouch = e.touches[0];
+    }
+}, false);
+
+document.addEventListener('touchend', function (e) {
+    initialTouch = null;
+}, false);
