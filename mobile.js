@@ -149,6 +149,69 @@ function checkCollisions() {
     return false;
 }
 
+// Function to generate buildings
+function generateBuildings(seed) {
+    function random(seed) {
+        var x = Math.sin(seed++) * 10000;
+        return x - Math.floor(x);
+    }
+
+    const lightDirection = new THREE.Vector3(1, 1, 0).normalize(); // Example light direction
+
+    const positions = new Set();
+
+    while (positions.size < 100) { // Generate 100 unique positions
+        const x = Math.floor(random(seed++) * 190 - 95); // Random x between -95 and 95
+        const z = Math.floor(random(seed++) * 190 - 95); // Random z between -95 and 95
+        positions.add(`${x},${z}`);
+    }
+
+    positions.forEach((pos, index) => {
+        const [i, j] = pos.split(',').map(Number);
+        const height = random(seed++) * 30 + 10; // More varied building heights
+        const width = random(seed++) * 10 + 5; // Wider buildings
+        const depth = random(seed++) * 10 + 5; // Deeper buildings
+
+        const buildingGeometry = new THREE.BoxGeometry(width, height, depth);
+        const texture = textureLoader.load(`textures/buildings/building_${index % 7 + 1}.png`);
+
+        // Different materials for each side of the building
+        const materials = [
+            new THREE.MeshBasicMaterial({ map: texture, color: "#5c2306" }), // Right
+            new THREE.MeshBasicMaterial({ map: texture, color: "#5c2306" }), // Left
+            new THREE.MeshBasicMaterial({ map: texture, color: 0x777777 }), // Top
+            new THREE.MeshBasicMaterial({ map: texture, color: 0x444444 }), // Bottom
+            new THREE.MeshBasicMaterial({ map: texture, color: "#fcbe2d" }), // Front
+            new THREE.MeshBasicMaterial({ map: texture, color: 0x111111 })  // Back
+        ];
+
+        const building = new THREE.Mesh(buildingGeometry, materials);
+        building.position.set(i, height / 2, j);
+
+        building.userData = { isBuilding: true };
+        scene.add(building);
+
+        // Create sidewalk around each building
+        const sidewalkGeometry = new THREE.PlaneGeometry(width + 4, depth + 4);
+        const sidewalkMaterial = new THREE.MeshBasicMaterial({
+            map: sidewalkTexture,
+            color: "#40310f",
+            polygonOffset: true,
+            polygonOffsetFactor: -1,
+            polygonOffsetUnits: -1
+        });
+        const sidewalk = new THREE.Mesh(sidewalkGeometry, sidewalkMaterial);
+        sidewalk.rotation.x = -Math.PI / 2;
+        sidewalk.position.set(i, 0.01, j); // Slightly above ground to avoid z-fighting
+        sidewalk.renderOrder = 1; // Ensure sidewalk is rendered after the ground
+
+        scene.add(sidewalk);
+    });
+}
+
+// Call the function to generate buildings with a specific seed
+generateBuildings(666);
+
 // Animation loop
 const animate = function () {
     requestAnimationFrame(animate);
