@@ -96,8 +96,6 @@ let canJump = false;
 let velocity = new THREE.Vector3();
 let direction = new THREE.Vector3();
 
-
-
 // Handle joystick movement
 let joystick = document.querySelector('.joystick-inner');
 let joystickContainer = document.querySelector('.joystick');
@@ -150,82 +148,7 @@ function checkCollisions() {
     }
     return false;
 }
-// Preload building textures
-const texturePaths = [
-    'textures/buildings/apartments1.png',
-    'textures/buildings/apartments2-2.png',
-    'textures/buildings/apartments2.png',
-    'textures/buildings/apartments2_side.png',
-    'textures/buildings/apartments4.png',
-    'textures/buildings/apartments5.png',
-    'textures/buildings/apartments6.png',
-    'textures/buildings/apartments7.png',
-    'textures/buildings/apartments8.png',
-    'textures/buildings/apartments9.png',
-    'textures/buildings/apartment_block5.png',
-    'textures/buildings/apartment_block6.png',
-    'textures/buildings/apartment_block7.png',
-    'textures/buildings/apartment_block8.png',
-    'textures/buildings/building_5c.png',
-    'textures/buildings/building_center.png',
-    'textures/buildings/building_church_side1.png',
-    'textures/buildings/building_church_side_bottom1.png',
-    'textures/buildings/building_church_side_bottom2.png',
-    'textures/buildings/building_church_side_top.png',
-    'textures/buildings/building_construction.png',
-    'textures/buildings/building_derelict1.png',
-    'textures/buildings/building_dks-1.png',
-    'textures/buildings/building_dks-2.png',
-    'textures/buildings/building_dock.png',
-    'textures/buildings/building_dock2.png',
-    'textures/buildings/building_dock_apartments.png',
-    'textures/buildings/building_dock_apartments2.png',
-    'textures/buildings/building_empty.png',
-    'textures/buildings/building_factory.png',
-    'textures/buildings/building_front2.png',
-    'textures/buildings/building_front3.png',
-    'textures/buildings/building_front4.png',
-    'textures/buildings/building_front5.png',
-    'textures/buildings/building_front8.png',
-    'textures/buildings/building_garage.png',
-    'textures/buildings/building_house1.png',
-    'textures/buildings/building_hsp.png',
-    'textures/buildings/building_h_windows.png',
-    'textures/buildings/building_jmu.png',
-    'textures/buildings/building_jmu2.png',
-    'textures/buildings/building_l2.png',
-    'textures/buildings/building_lb1.png',
-    'textures/buildings/building_lh1.png',
-    'textures/buildings/building_liver.png',
-    'textures/buildings/building_mirrored.png',
-    'textures/buildings/building_modern.png',
-    'textures/buildings/building_modern2.png',
-    'textures/buildings/building_modern3.png',
-    'textures/buildings/building_modern_side.png',
-    'textures/buildings/building_office.png',
-    'textures/buildings/building_office10.png',
-    'textures/buildings/building_office11.png',
-    'textures/buildings/building_office12.png',
-    'textures/buildings/building_office13-end.png',
-    'textures/buildings/building_office13.png',
-    'textures/buildings/building_office2.png',
-    'textures/buildings/building_office3.png',
-    'textures/buildings/building_office4.png',
-    'textures/buildings/building_office5.png',
-    'textures/buildings/building_office7.png',
-    'textures/buildings/building_office8.png',
-    'textures/buildings/building_office9.png',
-    'textures/buildings/building_oldfirm.png',
-    'textures/buildings/building_portacabin.png',
-    'textures/buildings/building_pub_old.png',
-    'textures/buildings/building_showroom_vacant.png',
-    'textures/buildings/building_side.png',
-    'textures/buildings/building_side2.png',
-    'textures/buildings/building_side3.png',
-    'textures/buildings/building_side4.png',
-    'textures/buildings/building_side5.png'
-];
-const textures = texturePaths.map(path => textureLoader.load(path));
+
 // Function to generate buildings
 function generateBuildings(seed) {
     function random(seed) {
@@ -233,33 +156,32 @@ function generateBuildings(seed) {
         return x - Math.floor(x);
     }
 
-    const lightDirection = new THREE.Vector3(1, 1, 0).normalize(); // Example light direction
+    const lightDirection = new THREE.Vector3(1, 1, 0).normalize();
 
     const positions = new Set();
 
-    while (positions.size < 100) { // Generate 100 unique positions
-        const x = Math.floor(random(seed++) * 190 - 95); // Random x between -95 and 95
-        const z = Math.floor(random(seed++) * 190 - 95); // Random z between -95 and 95
+    while (positions.size < 100) {
+        const x = Math.floor(random(seed++) * 190 - 95);
+        const z = Math.floor(random(seed++) * 190 - 95);
         positions.add(`${x},${z}`);
     }
 
     positions.forEach((pos, index) => {
         const [i, j] = pos.split(',').map(Number);
-        const height = random(seed++) * 30 + 10; // More varied building heights
-        const width = random(seed++) * 10 + 5; // Wider buildings
-        const depth = random(seed++) * 10 + 5; // Deeper buildings
+        const height = random(seed++) * 30 + 10;
+        const width = random(seed++) * 10 + 5;
+        const depth = random(seed++) * 10 + 5;
 
         const buildingGeometry = new THREE.BoxGeometry(width, height, depth);
         const texture = textureLoader.load(`textures/buildings/building_${index % 7 + 1}.png`);
 
-        // Different materials for each side of the building
         const materials = [
-            new THREE.MeshBasicMaterial({ map: texture, color: "#5c2306" }), // Right
-            new THREE.MeshBasicMaterial({ map: texture, color: "#5c2306" }), // Left
-            new THREE.MeshBasicMaterial({ map: texture, color: 0x777777 }), // Top
-            new THREE.MeshBasicMaterial({ map: texture, color: 0x444444 }), // Bottom
-            new THREE.MeshBasicMaterial({ map: texture, color: "#fcbe2d" }), // Front
-            new THREE.MeshBasicMaterial({ map: texture, color: 0x111111 })  // Back
+            new THREE.MeshBasicMaterial({ map: texture, color: "#5c2306" }),
+            new THREE.MeshBasicMaterial({ map: texture, color: "#5c2306" }),
+            new THREE.MeshBasicMaterial({ map: texture, color: 0x777777 }),
+            new THREE.MeshBasicMaterial({ map: texture, color: 0x444444 }),
+            new THREE.MeshBasicMaterial({ map: texture, color: "#fcbe2d" }),
+            new THREE.MeshBasicMaterial({ map: texture, color: 0x111111 })
         ];
 
         const building = new THREE.Mesh(buildingGeometry, materials);
@@ -268,7 +190,6 @@ function generateBuildings(seed) {
         building.userData = { isBuilding: true };
         scene.add(building);
 
-        // Create sidewalk around each building
         const sidewalkGeometry = new THREE.PlaneGeometry(width + 4, depth + 4);
         const sidewalkMaterial = new THREE.MeshBasicMaterial({
             map: sidewalkTexture,
@@ -279,14 +200,13 @@ function generateBuildings(seed) {
         });
         const sidewalk = new THREE.Mesh(sidewalkGeometry, sidewalkMaterial);
         sidewalk.rotation.x = -Math.PI / 2;
-        sidewalk.position.set(i, 0.01, j); // Slightly above ground to avoid z-fighting
-        sidewalk.renderOrder = 1; // Ensure sidewalk is rendered after the ground
+        sidewalk.position.set(i, 0.01, j);
+        sidewalk.renderOrder = 1;
 
         scene.add(sidewalk);
     });
 }
 
-// Call the function to generate buildings with a specific seed
 generateBuildings(666);
 
 // Animation loop
@@ -335,7 +255,6 @@ window.addEventListener('resize', function () {
     renderer.setSize(window.innerWidth, window.innerHeight);
 }, false);
 
-// Load skybox textures
 const loader = new THREE.CubeTextureLoader();
 const texture = loader.load([
     'skybox/gloomy_lf.png',
@@ -357,7 +276,7 @@ document.addEventListener('touchstart', function (e) {
 }, false);
 
 document.addEventListener('touchmove', function (e) {
-    if (e.touches.length === 1 && initialTouch) {
+    if (initialTouch && e.touches.length === 1) {
         const deltaX = e.touches[0].clientX - initialTouch.clientX;
         const deltaY = e.touches[0].clientY - initialTouch.clientY;
 
